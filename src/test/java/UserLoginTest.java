@@ -1,4 +1,4 @@
-import User.User;
+import user.User;
 import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
@@ -15,15 +15,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 
 public class UserLoginTest {
-    private User user;
+    private User userOne;
     private String bearerToken;
     private String accessToken;
 
     @Before
     public void setUp() {
-        user = User.getRandomData();
+        userOne = User.getRandomData();
     }
 
     @Step("Create user")
@@ -61,10 +62,10 @@ public class UserLoginTest {
 
     @Test
     @DisplayName("User authorisation")
-    @Description("User authorisation is successful anr get 200 ")
+    @Description("User authorisation is successful and return 200 ")
     public void testUserAuthorisation() {
-        createUser(user);
-        ValidatableResponse response = login(user);
+        createUser(userOne);
+        ValidatableResponse response = login(userOne);
         accessToken = response.extract().path("accessToken");
         bearerToken = accessToken.substring(7);
         int statusCodeSuccessfulLogin = response.extract().statusCode();
@@ -73,8 +74,25 @@ public class UserLoginTest {
         assertThat(statusCodeSuccessfulLogin, equalTo(200));
     }
 
+    @Test
+    @DisplayName("Login with wrong credentials")
+    @Description("User login with wrong credentials should fail and return 401")
+    public void testLoginWithEmptyPasswordValidation() {
+        User wrongUser = User.getCustomerWithEmptyPassword();
+        createUser(wrongUser);
+        ValidatableResponse wrongResponse = login(wrongUser);
+        int ActualStatusCode = wrongResponse.extract().statusCode();
+        String actualMessage = wrongResponse.extract().path("message");
+
+        assertThat(ActualStatusCode, equalTo(401));
+        assertEquals("Status code isn't correct", 401, ActualStatusCode);
+        assertEquals("User access token isn't correct", "email or password are incorrect", actualMessage);
+    }
+
     @After
     public void tearDown() {
-        deleteUser(bearerToken);
+        if (bearerToken != null) {
+            deleteUser(bearerToken);
+        }
     }
 }

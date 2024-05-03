@@ -1,6 +1,6 @@
-package User;
+package user;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import com.github.javafaker.Faker;
 
 public class User {
     public String name;
@@ -10,11 +10,6 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
     public User(String email, String password, String name) {
         this.email = email;
         this.password = password;
@@ -22,9 +17,10 @@ public class User {
     }
 
     public static User getRandomData() {
-        final String email = RandomStringUtils.randomAlphabetic(7) + "@ya.ru";
-        final String password = RandomStringUtils.randomAlphabetic(7);
-        final String name = RandomStringUtils.randomAlphabetic(7);
+        Faker faker = new Faker();
+        final String email = faker.internet().emailAddress();
+        final String password = faker.internet().password();
+        final String name = faker.name().fullName();
         return new User(email, password, name);
     }
 
@@ -44,43 +40,47 @@ public class User {
     }
 
     public static User getCustomerWithEmptyName() {
+        Faker faker = new Faker();
         return new User()
                 .setName("")
-                .setEmail(RandomStringUtils.randomAlphabetic(7) + "@ya.ru")
-                .setPassword(RandomStringUtils.randomAlphabetic(7));
+                .setEmail(faker.internet().emailAddress())
+                .setPassword(faker.internet().password());
     }
 
     public static User getCustomerWithEmptyPassword() {
+        Faker faker = new Faker();
         return new User()
                 .setPassword("")
-                .setEmail(RandomStringUtils.randomAlphabetic(7) + "@ya.ru")
-                .setName(RandomStringUtils.randomAlphabetic(7));
+                .setEmail(faker.internet().emailAddress())
+                .setName(faker.name().fullName());
     }
 
     public static User getCustomerWithEmptyEmail() {
+        Faker faker = new Faker();
         return new User()
                 .setEmail("")
-                .setPassword(RandomStringUtils.randomAlphabetic(7))
-                .setName(RandomStringUtils.randomAlphabetic(7));
+                .setPassword(faker.internet().password())
+                .setName(faker.name().fullName());
     }
 
     public static User getCustomerWithoutName() {
+        Faker faker = new Faker();
         return new User()
-                .setEmail(RandomStringUtils.randomAlphabetic(7) + "@ya.ru")
-                .setPassword(RandomStringUtils.randomAlphabetic(7));
+                .setEmail(faker.internet().emailAddress())
+                .setPassword(faker.internet().password());
     }
 
     public static User getCustomerWithoutPassword() {
+        Faker faker = new Faker();
         return new User()
-                .setEmail(RandomStringUtils.randomAlphabetic(7) + "@ya.ru")
-                .setName(RandomStringUtils.randomAlphabetic(7));
+                .setEmail(faker.internet().emailAddress())
+                .setName(faker.name().fullName());
     }
 
     public static User getCustomerWithoutEmail() {
+        Faker faker = new Faker();
         return new User()
-                .setPassword(RandomStringUtils.randomAlphabetic(7))
-                .setName(RandomStringUtils.randomAlphabetic(7));
+                .setPassword(faker.internet().password())
+                .setName(faker.name().fullName());
     }
-
-
 }
